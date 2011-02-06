@@ -12,7 +12,7 @@ import Control.Monad(forM_)
 import Text.Hakyll.Render(static)
 
 
-main = hakyll "" $ do
+main = hakyll "http://users.utu.fi/~machra" $ do
   postPaths <- liftM (reverse . sort) $ getRecursiveContents "posts"
   let index = createListing "index.html" ["templates/postitem.html"]
 	(take 3 postPages) [("title", Left "Home")]
