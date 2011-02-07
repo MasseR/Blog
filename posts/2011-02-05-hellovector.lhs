@@ -82,13 +82,16 @@ create a stateful representation of random number generators. For details see
 > randomRSt :: (RandomGen g, Random a) => (a, a) -> State g a
 > randomRSt = state . randomR
 
-The next function is interesting. If we sum two random numbers together and
-create a histogram from it, we would get a triangle pointing upwards, with the
-top being in the middle. This means that there's a higher chance to get values
-from the middle. But we didn't want to get values from the middle, but from the
-top, we wanted to have a higher chance of getting members that have better
-fitness values. If we take this summed random value, and subtract from it, we
-can move the top to the beginning.
+The next function is interesting. If you take a uniform random function
+generator, like for example a 1d6 dice, you'd get with equal chance the numbers
+1 to 6. However when you have two dices, you'd get random numbers from 2 to 12,
+with 2 being less probable than 6. You'd need to get two ones if you want to
+get 2. However to get 6, you'd need 1 and 5, 2 and 4, 3 and 3 etc. If you were
+actually to graph it, you'd get a triangular histogram with the point being in
+the middle.
+
+But we wanted the beginning of the population to have better probability than
+the middle, so how would we move it to the beginning? By subtracting from it.
 
 > wrandomRSt :: (RandomGen g) => Int -> State g Int
 > wrandomRSt n =
@@ -221,3 +224,5 @@ Example output could be:
     (1,"Helln world","Hellnsworld")
     (0,"Hello world","Helln wo ld")
 
+
+*Edit:* Clarified the paragraph about random numbers.
