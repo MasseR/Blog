@@ -1,5 +1,4 @@
 ---
-date: February 5, 2011
 title: Hello genetic algorithms
 tags: haskell,ai,ga
 ---

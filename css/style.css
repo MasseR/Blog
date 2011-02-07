@@ -1,0 +1,8 @@
+ul#navigation
+{
+    list-style-type:none;
+}
+a:link
+{
+    text-decoration:none;
+}
