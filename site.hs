@@ -21,7 +21,7 @@ main = hakyll "http://users.utu.fi/~machra" $ do
   queuePaths <- getRecursiveContents "queue"
   let
       renderablePosts = map ((>>> postManipulation) . createPage) postPaths
-      renderableQueue = map createPage queuePaths
+      renderableQueue = map ((>>> postManipulation) . createPage) queuePaths
       about = createPage "about.markdown"
   renderChain ["templates/default.html"] about
   renderPostList "index.html" "Home" (take 3 renderablePosts)

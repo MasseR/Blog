@@ -2,7 +2,7 @@ ul#navigation
 {
     list-style-type:none;
 }
-a:link
+#navigation a:visited, #navigation a:link
 {
     text-decoration:none;
 }

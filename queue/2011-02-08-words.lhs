@@ -1,3 +1,6 @@
+---
+title: Hangman solver
+---
 > import qualified Data.List.Stream as L
 > import Data.List
 > import qualified Data.Map as M
