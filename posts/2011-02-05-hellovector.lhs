@@ -83,15 +83,20 @@ create a stateful representation of random number generators. For details see
 > randomRSt = state . randomR
 
 The next function is interesting. If you take a uniform random function
-generator, like for example a 1d6 dice, you'd get with equal chance the numbers
-1 to 6. However when you have two dices, you'd get random numbers from 2 to 12,
-with 2 being less probable than 6. You'd need to get two ones if you want to
-get 2. However to get 6, you'd need 1 and 5, 2 and 4, 3 and 3 etc. If you were
+generator, like for example a 1d6 dice, you'd get an evenly distributed set of
+numbers from 1 to 6.
+![Uniform die]($root/static/die.png)
+
+However when you have two dices, you'd get random numbers from 2 to 12, with 2
+being less probable than 6. You'd need to get two ones if you want to get 2.
+However to get 6, you'd need 1 and 5, 2 and 4, 3 and 3 etc. If you were
 actually to graph it, you'd get a triangular histogram with the point being in
-the middle.
+the middle. ![Two dies]($root/static/twodie.png)
 
 But we wanted the beginning of the population to have better probability than
 the middle, so how would we move it to the beginning? By subtracting from it.
+
+![Moving the histogram]($root/static/twodieskewed.png)
 
 > wrandomRSt :: (RandomGen g) => Int -> State g Int
 > wrandomRSt n =
