@@ -6,3 +6,8 @@ ul#navigation
 {
     text-decoration:none;
 }
+ul#paginate, li#paginate
+{
+    list-style-type:none;
+    display:inline;
+}

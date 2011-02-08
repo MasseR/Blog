@@ -8,6 +8,7 @@ import Text.Hakyll.ContextManipulations (renderDate)
 import Text.Hakyll.CreateContext(createPage, createListing, combine)
 import Text.Hakyll.File(directory, getRecursiveContents)
 import Text.Hakyll.Render(css, renderChain, static)
+import Text.Hakyll.Paginate
 import Control.Arrow ((>>>))
 
 
@@ -20,7 +21,7 @@ main = hakyll "http://users.utu.fi/~machra" $ do
   postPaths <- liftM (reverse . sort) $ getRecursiveContents "posts"
   queuePaths <- getRecursiveContents "queue"
   let
-      renderablePosts = map ((>>> postManipulation) . createPage) postPaths
+      renderablePosts = paginate defaultPaginateConfiguration $ map ((>>> postManipulation) . createPage) postPaths
       renderableQueue = map ((>>> postManipulation) . createPage) queuePaths
       about = createPage "about.markdown"
   renderChain ["templates/default.html"] about
