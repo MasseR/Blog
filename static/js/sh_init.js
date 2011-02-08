@@ -12,6 +12,7 @@ for (var i=0, l=codes.length ; i<l ; i++) {
     case 'haskell':
     case 'html':
     case 'php':
+    case 'python':
     elPre.className = "sourceCode sh_" + elPre.className.replace("sourceCode ", "");
     break;
     case 'js':
@@ -22,4 +23,4 @@ for (var i=0, l=codes.length ; i<l ; i++) {
   }
 }
 
-sh_highlightDocument();
+sh_highlightDocument("/static/js/lang/", ".js");
