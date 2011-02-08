@@ -1,5 +1,6 @@
 ---
 title: Hangman solver
+tags: haskell, programming, ai
 ---
 
 Hangman is a game where people try to guess a word. A word is picked at random
