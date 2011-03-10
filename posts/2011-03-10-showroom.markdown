@@ -1,0 +1,50 @@
+---
+title: ICT Showroom and data validation
+tags: java,web
+---
+
+The ICT showroom event was today at ICT building, Turku, Finland. It is an
+event for students to show their projects and maybe even get some corporate
+interest. Turku University of Applied Sciences has a programming course in
+which they have to show their product at the ICT showroom event. My friend
+and his group did an Elgamal encryption system with Java.
+
+I don't know all the details about their project as it was the last stand I
+went to. The system was made for educational purposes, with manual inserting of
+prime number and other arguments. I think it was supposed to show different
+stages of the encryption, at least another project a few years ago did.
+They did however implement a network and serialization protocol which they
+used to demonstrate with Wireshark.
+
+I went to the stand 15 minutes before the end. They spent around five
+minutes explaining the project, and then asked me to break it. Seems like
+I've been loud enough to get some reputation around there :P. There was 10
+minutes left before the event would end, and they hand me their manual and
+network protocol. If I really had tried, I would have spent more time
+reading the protocol than there was time left, therefore at first I wasn't
+even going to try and break it.
+
+As I was handing back out the document, one of them mentioned something
+that made me think that they didn't properly validate their data. I didn't
+really know what to try with such little time left but I figured that I
+could take control of one of the laptops, start netcat and just hit the
+keyboard. As they saw me taking the laptop, their eyes gleamed with
+anticipation, wanting to see which would win, me or their software.
+
+I inserted a few random keystrokes and one of them noticed the server
+wasn't online. At this point I was already thinking that all the drama was
+for nothing. They tried to put the server back on, but it kept popping up
+some dialog, like in an infinite loop.
+
+They closed the entire program and restarted it, making sure that the
+server was up and listening for connections. I retried connecting netcat
+and inserting random data and behold, the behaviour repeated itself. A
+dialog starting in an infinite loop. We retried it a few more times, and I
+was able to replicate it every single time.
+
+I haven't seen their code since the very beginning when they asked me some
+guidance for the user interface and therefore I have no idea what bug I
+stumbled upon. I do know however that you should never trust the data
+coming from world, even when it's your own protocol. You can only hope that
+it's legitimate data from your server/client, but it could also be a geek
+with netcat, or even some maleficent person wanting to do some real harm.
