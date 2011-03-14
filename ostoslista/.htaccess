@@ -1,0 +1,4 @@
+AuthType Basic
+AuthName "My Protected Area"
+AuthUserFile /www/users/m/machra/ostoslista/.pass
+Require valid-user
