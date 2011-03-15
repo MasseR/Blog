@@ -141,3 +141,21 @@ concise.
 >   <$>  getVarT "name"
 >   <*> (read <$> getVarT "age")
 >   <*> getVarT "location"
+
+_Edit:_ A friend of mine mentioned another way to check fields with PHP, and he's right. Altough the solution is a bit ugly with small number of fields, it does scale up (visually) better than my version.
+
+~~~~~~{.sourceCode .php}
+function mkPerson()
+{
+  if(!isset($_POST['name']))
+    return NULL;
+  if(!isset($_POST['age']) || !is_numeric($_POST['age']))
+    return NULL;
+  if(!isset($_POST['location']))
+    return NULL;
+  return array(
+    "person" => $_POST['person'],
+    "age" => $_POST['age'],
+    "location" => $_POST['location']);
+}
+~~~~~~
