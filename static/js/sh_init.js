@@ -23,4 +23,4 @@ for (var i=0, l=codes.length ; i<l ; i++) {
   }
 }
 
-sh_highlightDocument("/static/js/lang/", ".js");
+//sh_highlightDocument("/static/js/lang/", ".js");
