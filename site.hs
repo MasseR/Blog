@@ -32,5 +32,6 @@ main = hakyll "http://users.utu.fi/machra" $ do
   forM_ renderableQueue $ renderChain [ "templates/post.html", "templates/queue.html", "templates/default.html"]
   directory css "css"
   directory static "static"
+  directory static "ostoslista"
   static "ostoslista/.htaccess"
   static "ostoslista/.pass"
