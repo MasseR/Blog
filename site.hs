@@ -17,7 +17,7 @@ renderPostList url title posts = do
   renderChain ["index.html", "templates/default.html"] list
 
 postManipulation = renderDate "date" "%B %e, %Y" "Unknown date"
-main = hakyll "http://users.utu.fi/~machra" $ do
+main = hakyll "http://users.utu.fi/machra" $ do
   postPaths <- liftM (reverse . sort) $ getRecursiveContents "posts"
   queuePaths <- getRecursiveContents "queue"
   let
