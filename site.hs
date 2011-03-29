@@ -1,37 +1,68 @@
-import Control.Monad(forM_)
-import Control.Monad(liftM)
-import Control.Monad.Trans(liftIO)
-import Data.List.Stream
-import Prelude hiding (reverse, map, take)
-import Text.Hakyll (hakyll)
-import Text.Hakyll.ContextManipulations (renderDate)
-import Text.Hakyll.CreateContext(createPage, createListing, combine)
-import Text.Hakyll.File(directory, getRecursiveContents)
-import Text.Hakyll.Render(css, renderChain, static)
-import Text.Hakyll.Paginate
-import Control.Arrow ((>>>))
+{-# LANGUAGE OverloadedStrings, Arrows #-}
 
+module Main where
 
-renderPostList url title posts = do
-  let list = createListing url ["templates/postitem.html"] posts [("title", Left title)]
-  renderChain ["index.html", "templates/default.html"] list
+import Prelude hiding (id)
+import Control.Category (id)
+import Control.Arrow ((***), (>>>), arr)
+import Data.Monoid
+import Hakyll.Main
+import Hakyll.Core.Routes
+import Hakyll.Core.Util.Arrow
+import Hakyll.Core.Rules
+import Hakyll.Core.Compiler
+import Hakyll.Core.Writable.CopyFile
+import Hakyll.Web.CompressCss
+import Hakyll.Web.Template
+import Hakyll.Web.RelativizeUrls
+import Hakyll.Web.Page
+import Hakyll.Web.Page.Metadata
 
-postManipulation = renderDate "date" "%B %e, %Y" "Unknown date"
-main = hakyll "http://users.utu.fi/machra" $ do
-  postPaths <- liftM (reverse . sort) $ getRecursiveContents "posts"
-  queuePaths <- getRecursiveContents "queue"
-  let
-      renderablePosts = paginate defaultPaginateConfiguration $ map ((>>> postManipulation) . createPage) postPaths
-      renderableQueue = map ((>>> postManipulation) . createPage) queuePaths
-      about = createPage "about.markdown"
-  renderChain ["templates/default.html"] about
-  renderPostList "index.html" "Home" (take 3 renderablePosts)
-  renderPostList "posts.html" "All posts" renderablePosts
-  renderPostList "queue.html" "Queue" renderableQueue
-  forM_ renderablePosts $ renderChain [ "templates/post.html", "templates/default.html"]
-  forM_ renderableQueue $ renderChain [ "templates/post.html", "templates/queue.html", "templates/default.html"]
-  directory css "css"
-  directory static "static"
-  directory static "ostoslista"
-  static "ostoslista/.htaccess"
-  static "ostoslista/.pass"
+main = hakyll $ do
+  -- CSS
+  route "css/*" idRoute
+  compile "css/*" compressCssCompiler
+  -- JS
+  route "static/js/*" idRoute
+  compile "static/js/*" copyFileCompiler
+  -- JS-lang
+  route "static/js/lang/*" idRoute
+  compile "static/js/lang/*" copyFileCompiler
+  -- Images
+  route "static/img/*" idRoute
+  compile "static/img/*" copyFileCompiler
+  -- About
+  route "about.markdown" $ setExtension ".html"
+  compile "about.markdown" $ pageCompiler
+    >>> applyTemplateCompiler "templates/default.html"
+    >>> relativizeUrlsCompiler
+  -- Posts
+  route "posts/*" $ setExtension ".html"
+  compile "posts/*" $ pageCompiler
+    >>> arr (renderDateField "date" "%B %e, %Y" "Date unknown")
+    >>> applyTemplateCompiler "templates/post.html"
+    >>> applyTemplateCompiler "templates/default.html"
+    >>> relativizeUrlsCompiler
+  -- Index
+  route "index.html" idRoute
+  create "index.html" $ constA mempty
+    >>> arr (setField "title" "Home")
+    >>> requireAllA "posts/*" (id *** arr (take 3 . reverse . sortByBaseName) >>> addPostList)
+    >>> applyTemplateCompiler "templates/index.html"
+    >>> applyTemplateCompiler "templates/default.html"
+    >>> relativizeUrlsCompiler
+  -- Posts list
+  route "posts.html" idRoute
+  create "posts.html" $ constA mempty
+    >>> arr (setField "title" "Posts")
+    >>> requireAllA "posts/*" addPostList
+    >>> applyTemplateCompiler "templates/index.html"
+    >>> applyTemplateCompiler "templates/default.html"
+    >>> relativizeUrlsCompiler
+  compile "templates/*" templateCompiler
+  where
+    addPostList = setFieldA "posts" $
+      arr (reverse . sortByBaseName)
+	>>> require "templates/postitem.html" (\p t -> map (applyTemplate t) p)
+	>>> arr mconcat
+	>>> arr pageBody

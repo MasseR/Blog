@@ -37,7 +37,7 @@ histogram might be of length 1 for all the letters. If this happens the program
 just checks linearly every possible letter until it either finds the right
 letter or goes to the end. A better algorithm might be choosing a letter at
 random, favouring those with higher rank. See the [previous
-post]($root/posts/2011-02-05-hellovector.html) or the [probability
+post](/posts/2011-02-05-hellovector.html) or the [probability
 package](http://hackage.haskell.org/package/probability) for how to do this.
 
 > import qualified Data.List.Stream as L

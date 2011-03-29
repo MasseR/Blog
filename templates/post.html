@@ -1,14 +1,10 @@
 <div id="blog">
-    <h3>$title</h3>
-    $body
+    <h3>$title$</h3>
+    $body$
 </div>
-<ul id="paginate">
-    <li>$previous</li>
-    <li>$next</li>
-</ul>
 <script type="application/javascript" src="$root/static/js/sh_init.js"></script>
 <script type="application/javascript">
-    sh_highlightDocument("$root/static/js/lang/", ".js");
+    sh_highlightDocument("/static/js/lang/", ".js");
 </script>
 
 <div id="disqus_thread"></div>
@@ -17,8 +13,8 @@
     var disqus_shortname = 'masser-io'; // required: replace example with your forum shortname
 
     // The following are highly recommended additional parameters. Remove the slashes in front to use.
-    var disqus_identifier = '$url';
-    var disqus_url = 'http://users.utu.fi/machra/$url';
+    var disqus_identifier = '$url$';
+    var disqus_url = 'http://users.utu.fi/machra/$url$';
 
     /* * * DON'T EDIT BELOW THIS LINE * * */
     (function() {
