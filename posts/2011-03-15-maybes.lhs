@@ -45,7 +45,8 @@ function mkPerson()
         $person = array(
           "name" => $_POST['name'],
           "age" => $_POST['age'],
-          "location" => $_POST['location'],
+          "location" => $_POST['location']
+          );
       }
     }
   }
