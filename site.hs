@@ -1,27 +1,41 @@
-import Control.Monad(forM_)
-import Control.Monad(liftM)
-import Control.Monad.Trans(liftIO)
-import Data.List.Stream
-import Prelude hiding (reverse, map, take)
-import Text.Hakyll (hakyll)
-import Text.Hakyll.ContextManipulations (renderDate)
-import Text.Hakyll.CreateContext(createPage, createListing, combine)
-import Text.Hakyll.File(directory, getRecursiveContents)
-import Text.Hakyll.Render(css, renderChain, static)
-import Text.Hakyll.Paginate
-import Control.Arrow ((>>>))
+{-# LANGUAGE OverloadedStrings, Arrows #-}
 
+module Main where
 
-main = hakyll "http://users.utu.fi/machra" $ do
+import Prelude hiding (id)
+import Control.Category (id)
+import Control.Arrow ((***), (>>>), arr)
+import Data.Monoid
+import Hakyll.Main
+import Hakyll.Core.Routes
+import Hakyll.Core.Util.Arrow
+import Hakyll.Core.Rules
+import Hakyll.Core.Compiler
+import Hakyll.Core.Writable.CopyFile
+import Hakyll.Web.CompressCss
+import Hakyll.Web.Template
+import Hakyll.Web.RelativizeUrls
+import Hakyll.Web.Page
+import Hakyll.Web.Page.Metadata
+
+main = hakyll $ do
   -- CSS
   route "css/*" idRoute
   compile "css/*" compressCssCompiler
   -- JS
-  route "static/js/*/**" idRoute
-  compile "static/js/*/**" copyFileCompiler
+  route "static/js/*" idRoute
+  compile "static/js/*" copyFileCompiler
+  -- JS-lang
+  route "static/js/lang/*" idRoute
+  compile "static/js/lang/*" copyFileCompiler
   -- Images
-  route "static/img/*/**" idRoute
-  compile "static/img/*/**" copyFileCompiler
+  route "static/img/*" idRoute
+  compile "static/img/*" copyFileCompiler
+  -- About
+  route "about.markdown" $ setExtension ".html"
+  compile "about.markdown" $ pageCompiler
+    >>> applyTemplateCompiler "templates/default.html"
+    >>> relativizeUrlsCompiler
   -- Posts
   route "posts/*" $ setExtension ".html"
   compile "posts/*" $ pageCompiler
@@ -31,18 +45,20 @@ main = hakyll "http://users.utu.fi/machra" $ do
     >>> relativizeUrlsCompiler
   -- Index
   route "index.html" idRoute
-  compile "index.html" $ constA mempty
+  create "index.html" $ constA mempty
     >>> arr (setField "title" "Home")
     >>> requireAllA "posts/*" (id *** arr (take 3 . reverse . sortByBaseName) >>> addPostList)
     >>> applyTemplateCompiler "templates/index.html"
     >>> applyTemplateCompiler "templates/default.html"
+    >>> relativizeUrlsCompiler
   -- Posts list
   route "posts.html" idRoute
-  compile "posts.html" $ constA mempty
+  create "posts.html" $ constA mempty
     >>> arr (setField "title" "Posts")
     >>> requireAllA "posts/*" addPostList
     >>> applyTemplateCompiler "templates/index.html"
     >>> applyTemplateCompiler "templates/default.html"
+    >>> relativizeUrlsCompiler
   compile "templates/*" templateCompiler
   where
     addPostList = setFieldA "posts" $
