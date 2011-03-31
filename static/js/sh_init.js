@@ -12,6 +12,7 @@ for (var i=0, l=codes.length ; i<l ; i++) {
     case 'haskell':
     case 'html':
     case 'php':
+    case 'java':
     case 'python':
     elPre.className = "sourceCode sh_" + elPre.className.replace("sourceCode ", "");
     break;
