@@ -65,7 +65,7 @@ main = hakyll $ do
   create "posts.html" $ constA mempty
     >>> arr (setField "title" "Posts")
     >>> requireAllA "posts/*" addPostList
-    >>> applyTemplateCompiler "templates/index.html"
+    >>> applyTemplateCompiler "templates/posts.html"
     >>> applyTemplateCompiler "templates/default.html"
     >>> relativizeUrlsCompiler
   match "templates/*" $ compile templateCompiler
