@@ -26,5 +26,5 @@ $(document).ready(function() {
             }
         }
     }
-    sh_highlightDocument('/static/js/lang/', '.js');
+    sh_highlightDocument('../static/js/lang/', '.js');
 });
