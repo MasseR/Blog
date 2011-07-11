@@ -488,6 +488,7 @@ function safeMap($f, $arr)
     } catch(Exception e) { }
     return array_map($f, $arr);
 }
+~~~
 
 The last one is a bit of a stretch, but it's for the error I was talking about
 earlier. Imagine that we are getting some data from a database, and mapping
