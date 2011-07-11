@@ -18,6 +18,7 @@ for (var i=0, l=codes.length ; i<l ; i++) {
     break;
     case 'js':
     elPre.className += " sh_javascript";
+    break;
     case 'literate haskell':
     elPre.className += " sh_haskell";
     break;
