@@ -66,7 +66,7 @@ img {
 	position:relative;
 	left:50%;
 	margin-left:-400px;
-	background:#ff9;    	/* Right column background colour */
+	background: #FFD8B7;    	/* Right column background colour */
 }
 #col1wrap {
 	float:right;
@@ -108,31 +108,6 @@ img {
 #footer p {
 	padding:.5em 15px;
 }
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
+#blog {
+    width: 50em;
+}
