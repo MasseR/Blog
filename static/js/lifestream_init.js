@@ -3,6 +3,13 @@ $(document).ready(function() {
         list: [ {
             service : "github",
             user    : "MasseR"
-        } ]
+        }, {
+            service : "twitter",
+            user    : "MasseR"
+        }, {
+            service : "reddit",
+            user    : "Masse"
+        }
+        ]
     });
 });
