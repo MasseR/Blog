@@ -147,9 +147,9 @@ represented in Haskell with the following:
 
 ~~~{.sourceCode .haskell}
 -- Pointfree
-doSomething = flip (zipWith (flip (,))) . repeat
+doSomething = zip . repeat
 -- Explicit arguments
-doSomething' uid gids = zipWith (flip (,)) gids (repeat uid)
+doSomething' uid gids = zip (repeat uid) gids
 ~~~
 
 Although the first version is shorter, it's not necessarily as readable as the
