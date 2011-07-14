@@ -9,6 +9,7 @@ import Data.Monoid
 import Data.List
 import Hakyll.Main
 import Hakyll.Core.Routes
+import Hakyll.Core.Configuration (defaultHakyllConfiguration, deployCommand)
 import Hakyll.Core.Util.Arrow
 import Hakyll.Core.Rules
 import Hakyll.Core.Compiler
@@ -21,7 +22,7 @@ import Hakyll.Web.Page.List
 import Hakyll.Web.Page.Metadata
 
 
-main = hakyll $ do
+main = hakyllWith config $ do
   -- CSS
   match "css/*" $ do
     route idRoute
@@ -70,6 +71,7 @@ main = hakyll $ do
     >>> relativizeUrlsCompiler
   match "templates/*" $ compile templateCompiler
   where
+    config = defaultHakyllConfiguration { deployCommand = "rsync --checksum --delete -avz -e ssh _site/ machra@linux.utu.fi:/www/users/m/machra/ --exclude ostoslista" }
     addPostList = setFieldA "posts" $
       arr recentFirst
         >>> require "templates/postitem.html" (\p t -> map (applyTemplate t) p)
