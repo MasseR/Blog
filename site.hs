@@ -57,7 +57,7 @@ main = hakyllWith config $ do
   match "index.html" $ route idRoute
   create "index.html" $ constA mempty
     >>> arr (setField "title" "Home")
-    >>> requireAllA "posts/*" (id *** arr (take 3 . recentFirst) >>> addPostList)
+    >>> setFieldPageList (take 5 . recentFirst) "templates/postitem.html" "posts" "posts/*"
     >>> applyTemplateCompiler "templates/index.html"
     >>> applyTemplateCompiler "templates/default.html"
     >>> relativizeUrlsCompiler
@@ -65,15 +65,10 @@ main = hakyllWith config $ do
   match "posts.html" $ route idRoute
   create "posts.html" $ constA mempty
     >>> arr (setField "title" "Posts")
-    >>> requireAllA "posts/*" addPostList
+    >>> setFieldPageList (recentFirst) "templates/postitem.html" "posts" "posts/*"
     >>> applyTemplateCompiler "templates/posts.html"
     >>> applyTemplateCompiler "templates/default.html"
     >>> relativizeUrlsCompiler
   match "templates/*" $ compile templateCompiler
   where
     config = defaultHakyllConfiguration { deployCommand = "rsync --checksum --delete -avz -e ssh _site/ machra@linux.utu.fi:/www/users/m/machra/ --exclude ostoslista" }
-    addPostList = setFieldA "posts" $
-      arr recentFirst
-        >>> require "templates/postitem.html" (\p t -> map (applyTemplate t) p)
-        >>> arr mconcat
-        >>> arr pageBody
