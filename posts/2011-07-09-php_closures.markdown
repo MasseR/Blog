@@ -100,7 +100,7 @@ This small example already showed two uses for higher order functions and
 lambdas, namely `map` and `filter`. It's a bit long line, but it is still
 readable and understandable.
 
-The idiomatic way to do the same with haskell would be to loop over the
+The idiomatic way to do the same with PHP would be to loop over the
 employers and add the result to an array if there is a match. This is such a
 simple example that it's still extremely readable, but in general mutable
 variables, make it more difficult to keep track of what's happening.
@@ -147,9 +147,9 @@ represented in Haskell with the following:
 
 ~~~{.sourceCode .haskell}
 -- Pointfree
-doSomething = flip (zipWith (flip (,))) . repeat
+doSomething = zip . repeat
 -- Explicit arguments
-doSomething' uid gids = zipWith (flip (,)) gids (repeat uid)
+doSomething' uid gids = zip (repeat uid) gids
 ~~~
 
 Although the first version is shorter, it's not necessarily as readable as the
