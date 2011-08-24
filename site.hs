@@ -51,6 +51,7 @@ main = hakyllWith config $ do
     route $ setExtension "html"
     compile $ pageCompiler
       >>> arr (renderDateField "date" "%B %e, %Y" "Date unknown")
+      >>> arr (copyBodyToField "description")
       >>> applyTemplateCompiler "templates/post.html"
       >>> applyTemplateCompiler "templates/default.html"
       >>> relativizeUrlsCompiler
