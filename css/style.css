@@ -1,3 +1,9 @@
+#rss a
+{
+    position: relative;
+    top: -14px;
+    left: 5px;
+}
 #col3
 {
     font-size: 11px;

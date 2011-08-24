@@ -17,6 +17,7 @@ import Hakyll.Core.Writable.CopyFile
 import Hakyll.Web.CompressCss
 import Hakyll.Web.Template
 import Hakyll.Web.RelativizeUrls
+import Hakyll.Web.Feed
 import Hakyll.Web.Page
 import Hakyll.Web.Page.List
 import Hakyll.Web.Page.Metadata
@@ -70,5 +71,13 @@ main = hakyllWith config $ do
     >>> applyTemplateCompiler "templates/default.html"
     >>> relativizeUrlsCompiler
   match "templates/*" $ compile templateCompiler
+  match "rss.xml" $ route idRoute
+  create "rss.xml" $ requireAll_ "posts/*" >>> renderRss feedConfiguration
   where
     config = defaultHakyllConfiguration { deployCommand = "rsync --checksum --delete -avz -e ssh _site/ machra@linux.utu.fi:/www/users/m/machra/ --exclude ostoslista" }
+    feedConfiguration = FeedConfiguration {
+        feedTitle         = "Masse's blog"
+        , feedDescription = "Blog about functional programming and all around it"
+        , feedAuthorName  = "Mats Rauhala"
+        , feedRoot        = "http://users.utu.fi/machra"
+      }
