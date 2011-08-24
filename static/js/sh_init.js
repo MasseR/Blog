@@ -14,6 +14,7 @@ $(document).ready(function() {
                 case 'html':
                 case 'php':
                 case 'java':
+                case 'clojure':
                 case 'python':
                     elPre.className = "sourceCode sh_" + elPre.className.replace("sourceCode ", "");
                     break;
