@@ -9,15 +9,19 @@ Lambdas, also known as anonymous functions are functions with no name. Normally
 you would create a function like this:
 
 ~~~{.sourceCode .php}
+<?php
 function doSomething() {
     return "Fire ze missiles!";
 }
+?>
 ~~~~~
 
 With lambdas, the same function could be written as:
 
 ~~~~~{.sourceCode .php}
+<?php
 $doSomething = function() { return "Fire ze missiles!"; }
+?>
 ~~~~~
 
 That's all fine and dandy, but I haven't said anything about closures. Closures
@@ -25,11 +29,13 @@ close over a function, trapping the variables inside. This is useful in many
 ways, and this is but an example:
 
 ~~~~{.sourceCode .php}
+<?php
 function doSomething($userid, $groups) {
     $bind = array_map(function($groupid) use($userid) {
         return array("uid" => $userid, "gid" => $groupid);
     };
 }
+?>
 ~~~~
 
 The variable `$userid` is trapped inside the anonymous function. The function
@@ -73,6 +79,7 @@ data Employer = Employer {
 ~~~~
 
 ~~~~~{.sourceCode .php}
+<?php
 class Employer {
     private $surname = null;
     private $forename = null;
@@ -86,6 +93,7 @@ class Employer {
     function getChildren() { return $this->children;            }
     function hasChildren() { return count($this->children) > 0; }
 }
+?>
 ~~~~~
 
 To get the employers who have children, we can just filter them and then format
@@ -106,10 +114,12 @@ simple example that it's still extremely readable, but in general mutable
 variables, make it more difficult to keep track of what's happening.
 
 ~~~~{.sourceCode .php}
+<?php
 $employersWithChildren = array();
 foreach($employers as $e)
     if($e->hasChildren())
         $employersWithChildren[] = array($e->getSurname(), $e->getForename());
+?>
 ~~~~
 
 Seeing how simple the Haskell example was, you'd expect that the same would
@@ -117,11 +127,13 @@ hold true for PHP. Let's see how it could be written with higher order
 functions in PHP. The algorithm is exactly the same as the Haskell example.
 
 ~~~~~{.sourceCode .php}
+<?php
 array_map(function($x) {
     return array($x->getSurname(), $x->getForename());
 }, array_filter($employers, function($x) {
     return $x->hasChildren();
 });
+?>
 ~~~~~
 
 There's many reasons why it's difficult to read it. First of all, the signature
@@ -175,6 +187,7 @@ the same argument as was given to it. In PHP it could be written as `function
 id($x) { return $x; }`.
 
 ~~~{.sourceCode .php}
+<?php
 all(function($x) { return $x; }, array(
     true,
     true,
@@ -183,6 +196,7 @@ all(function($x) { return $x; }, array(
     true,
     false,
     true)); // => false
+?>
 ~~~
 
 Another function I need to introduce is `apply` which takes a function and an
@@ -198,20 +212,24 @@ function and a list of inputs and filters them. However if we want more general
 functionality and reusability, the first one is the way to go.
 
 ~~~{.sourceCode .php}
+<?php
 // Imagine that $validators is in scope
 $validate = function($input) use ($validators) {
     return all($validators, function($y) use($input) {
         return $y($input);
     }
 };
+?>
 ~~~
 
 It's a mouthful. Four lines, two lambdas, and extremely difficult to read. How
 does Haskell fare against it?
 
 ~~~{.sourceCode .haskell}
+<?php
 -- Imagine validators are in scope
 validate input = all ($ input) validators
+?>
 ~~~
 
 One line? Is that really all? Yup, it's that simple. There's also some currying
@@ -246,11 +264,13 @@ them. It's just not a pain to create the function, but the invoking is horrible
 too.
 
 ~~~{.sourceCode .php}
+<?php
 function add($a) {
  return function($b) use($a) {
     return $a + $b;
  };
 }
+?>
 ~~~
 
 The function add takes an arguments and returns a function, just like haskell
@@ -259,9 +279,11 @@ difficult to read, and parse. But that's just the function, and I mentioned
 that invoking the function is difficult too. Let's see how it's done.
 
 ~~~{.sourceCode .php}
+<?php
 $curried = add(1);
 $result = $curried(2);
 $illegal = add(1)(2); // Doesn't work
+?>
 ~~~
 
 So to invoke the curried functions, we need to temporarily set the function
@@ -284,6 +306,7 @@ classes, static classes, classes with magic methods, and anonymous functions
 created with `create_function`.
 
 ~~~{.sourceCode .php}
+<?php
 function() { return null; } // Anonymous / lambda function
 create_user_func('$x', 'return $x'); // Anonymous / lambda function
 function id($x) { return $x; } // Normal function
@@ -292,6 +315,7 @@ class Foo {
     static function s_function() { return null; } // Static method in a function
     function __invoke() { return null; } // Makes the class callable
 }
+?>
 ~~~
 
 We have two functions for calling functions (that itself is a subject of wtf I
@@ -303,6 +327,7 @@ Let's take all the different kinds of callbacks, and walk through how we can
 call them. Let's start with anonymous functions.
 
 ~~~{.sourceCode .php}
+<?php
 // Our example function is just id
 $fun = function($x) { return $x; }
 
@@ -315,9 +340,11 @@ call_user_func($fun, 1);
 
 // And with call_user_func_array
 call_user_func_array($fun, array(1));
+?>
 ~~~
 
 ~~~{.sourceCode .php}
+<?php
 // Before 5.3 you had to create anonymous function with create_function
 $fun = create_function('$x', 'return $x;');
 
@@ -325,9 +352,11 @@ $fun = create_function('$x', 'return $x;');
 // functions
 call_user_func($fun, 1);
 call_user_func_array($fun, array(1));
+?>
 ~~~
 
 ~~~{.sourceCode .php}
+<?php
 function id($x) { return $x; }
 
 // As you know, you can call it like a normal function, since it is a normal function
@@ -339,9 +368,11 @@ id(1);
 // and I'll come back with an example later.
 call_user_func('id', 1);
 call_user_func_array('id', array(1));
+?>
 ~~~
 
 ~~~{.sourceCode .php}
+<?php
 // A normal public method in a class.
 class Foo {
     function id($x) { return $x; }
@@ -368,9 +399,11 @@ call_user_func( array ("Foo", 'id'), 1     );
 call_user_func_array ( array ($foo, 'id'),      array (1) );
 call_user_func_array ( array (new Foo(), 'id'), array (1) );
 call_user_func_array ( array ("Foo", 'id'),     array (1) );
+?>
 ~~~~
 
 ~~~{.sourceCode .php}
+<?php
 // A static method in a class.
 class Foo {
     static function id($x) { return $x; }
@@ -394,9 +427,11 @@ call_user_func_array ( array ($foo, 'id'),      array (1) );
 call_user_func_array ( array (new Foo(), 'id'), array (1) );
 call_user_func_array ( array ("Foo", 'id'),     array (1) );
 call_user_func_array( "Foo::id", array(1)); // New
+?>
 ~~~
 
 ~~~{.sourceCode .php}
+<?php
 // A callable class. I don't have any experience with this, so I might have
 // missed something
 class Id {
@@ -419,6 +454,7 @@ call_user_func_array(array($id, "__invoke"), array(1));
 call_user_func_array(array(new Id(), "__invoke"), array(1));
 call_user_func_array(array("Id", "__invoke"), array(1));
 call_user_func_array($id, array(1));
+?>
 ~~~
 
 That's a whole lot of different kinds of callbacks and ways to call them. When
@@ -428,19 +464,23 @@ let's write a custom map implementation and a wrapper that always returns a
 nice callable function.
 
 ~~~{.sourceCode .php}
+<?php
 function callable($f) {
     return function() use($f) {
         return call_user_func_array($f, func_get_args());
     };
 }
+?>
 ~~~
 
 It's a nice wrapper that returns a function that calls the callable with the
 arguments given for the inner function. We could use it like this:
 
 ~~~{.sourceCode .php}
+<?php
 $id = callable('id');
 $id(1);
+?>
 ~~~
 
 But there's a problem with this implementation. If we supply something other
@@ -450,6 +490,7 @@ function is callable. Let's edit the function to throw exception when callable
 is not a callable.
 
 ~~~{.sourceCode .php}
+<?php
 function callable($f) {
     if(!is_callable($f))
         throw new Exception("Not callable");
@@ -457,6 +498,7 @@ function callable($f) {
         return call_user_func_array($f, func_get_args());
     };
 }
+?>
 ~~~
 
 Great, now we have some rudimentary error handling and we can go forward to
@@ -465,12 +507,14 @@ array is null. How about making a map that returns an empty array if given null
 as an argument.
 
 ~~~{.sourceCode .php}
+<?php
 function safeMap($f, $arr)
 {
     if(is_null($arr))
         return array();
     return array_map($f, $arr);
 }
+?>
 ~~~
 
 Now we have a function that does the sane thing if given an empty value. We no
@@ -478,6 +522,7 @@ longer need to explicitly check that the array is not null when mapping over
 values. We might also like some lazy loading, which we can do with callbacks.
 
 ~~~{.sourceCode .php}
+<?php
 function safeMap($f, $arr)
 {
     if(is_null($arr))
@@ -488,6 +533,7 @@ function safeMap($f, $arr)
     } catch(Exception e) { }
     return array_map($f, $arr);
 }
+?>
 ~~~
 
 The last one is a bit of a stretch, but it's for the error I was talking about

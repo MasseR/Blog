@@ -33,6 +33,7 @@ fields existance is checked explicitly and the age is validated as a number.
 Only at the deepest level the `$person` variable is set with a value.
 
 ~~~~~~~~{.sourceCode .php}
+<?php
 function mkPerson()
 {
   $person = null;
@@ -52,6 +53,7 @@ function mkPerson()
   }
   return $person;
 }
+?>
 ~~~~~~~~
 
 If we have a large number of mandatory fields, one could validate the fields
@@ -61,6 +63,7 @@ check the numeric value. This is also too complex for three fields, but any
 more and it might do just the trick.
 
 ~~~~~~{.sourceCode .php}
+<?php
 $required_fields = array("name", "age", "location");
 $valid = array_reduce(
   $required_fields,
@@ -74,6 +77,7 @@ if($valid)
   foreach($required_fields as $key)
     $person[$key] = $_POST[$key];
 }
+?>
 ~~~~~~
 
 So how does Haskell fare? There are libraries for forms and great frameworks
@@ -146,6 +150,7 @@ concise.
 _Edit:_ A friend of mine mentioned another way to check fields with PHP, and he's right. Altough the solution is a bit ugly with small number of fields, it does scale up (visually) better than my version.
 
 ~~~~~~{.sourceCode .php}
+<?php
 function mkPerson()
 {
   if(!isset($_POST['name']))
@@ -159,4 +164,5 @@ function mkPerson()
     "age" => $_POST['age'],
     "location" => $_POST['location']);
 }
+?>
 ~~~~~~
