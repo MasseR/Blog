@@ -29,11 +29,11 @@ main = hakyllWith config $ do
     route idRoute
     compile compressCssCompiler
   -- JS
-  match "static/js/*" $ do
+  match "static/js/**" $ do
     route idRoute
     compile copyFileCompiler
-  -- JS-lang
-  match "static/js/lang/*" $ do
+  -- Data
+  match "static/data/**" $ do
     route idRoute
     compile copyFileCompiler
   -- Images
