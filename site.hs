@@ -16,7 +16,7 @@ import Hakyll.Core.Compiler
 import Hakyll.Core.Writable.CopyFile
 import Hakyll.Web.CompressCss
 import Hakyll.Web.Template
-import Hakyll.Web.RelativizeUrls
+import Hakyll.Web.Urls.Relativize
 import Hakyll.Web.Feed
 import Hakyll.Web.Page
 import Hakyll.Web.Page.List

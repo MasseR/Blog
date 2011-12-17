@@ -48,7 +48,7 @@ Executable blog
   Main-is:             site.hs
   
   -- Packages needed in order to build this package.
-  Build-depends:       base >= 4.0, hakyll == 3.2.0.2
+  Build-depends:       base >= 4.0, hakyll == 3.2.3.2
   
   -- Modules not exported by this package.
   -- Other-modules:       
