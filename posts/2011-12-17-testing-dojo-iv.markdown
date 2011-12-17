@@ -61,4 +61,60 @@ have no real world experience, so who knows.
 
 So the class was divided into two, other half testing [our
 university](utu.fi) website, and the other half testing some android
-software.
+software. The groups were then divided into pairs, where the other
+takes notes and the other tests. I was in the half that tested the
+website. This time around we made some clear goals (charters) and kept
+with it. Taking record of what we do and time spent with it. I admit
+that I'm a total liar at this point. Me and my partner had a clear
+goal yes, but we didn't record everything we did. We recorded when we
+started, when we stopped and every issue and/or bug we found. Although
+to be honest, there were so much issues that we might have as well
+been recording what we do with the issues. There wasn't a page where
+something wasn't amiss.
+
+Our charters were divided for the subgroups evenly. Or rather we
+created a couple of charters with different areas, with the subgroups
+taking a different area each. Some of the charters were the
+differences between Finnish / English sites and their content and
+testing the forms.
+
+From our experience from the last dojo, we knew that the translations
+were a bigger problem than the forms, so we started with it. We
+decided to keep fifteen minutes intervals and then switch, with a
+total of three switches and a total duration of one hour and fifteen
+minutes. We were just able to finish our third turn when lunch break
+started.
+
+After coming back, a surprise awaited us. We were supposed to switch
+the groups, those who tested the website were supposed to test the
+android software and vice versa. This surprisingly was tricker than we
+thought. We had no idea what the software was, what the charters were,
+and how well the previous sessions had been done. So we did as we best
+saw fit, continued the charters that the previous group had started,
+but found nothing.
+
+On the other hand, we were able to find issues outside of the scope of
+the charter. Actually the problem we found, was a tricky one, or
+rather, a tricky to find. If there is a problem with the network and
+the software tries to update itself, it will not timeout. After
+thinking it through, there might be more to the issue than that. I
+believe the problem was caused because the device was still connected,
+meaning that it had connection to the access point, but the network
+there uses web authentication, and that authentication had expired.
+Every http request is redirected to the login page, but what happens
+to other requests is uncertain. I've noticed that if I try to connect
+to ssh without logging in, it will try to initiate the connection for
+a long time.
+
+Me and my pair found out during the debriefing that while we had
+finished one charter (and continued the first android one), the other
+groups had finished nearly all of their charters. Other thing our
+group missed was the times, but thankfully we knew when we started and
+remembered when we went to eat so all was not lost. One more thing to
+note is that like I mused in the last post that having a clear goal
+would help, this time with a clear goal, I can say that it _will_
+help.
+
+As the course comes to an end, I must bid farewell for the lecturers,
+it was great. I had much fun, and learned a lot, even if I might never
+be able to put it into proper use.
