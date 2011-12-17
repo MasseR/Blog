@@ -1,72 +1,45 @@
-<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd">
-<html xmlns="http://www.w3.org/1999/xhtml" xml:lang="en-GB">
+<!DOCTYPE html>
+<html>
     <head>
-        <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
-        <link rel="stylesheet" type="text/css" href="/css/lifestream.css" />
+        <!-- <link rel="stylesheet" type="text/css" href="/css/lifestream.css" /> -->
         <script type="application/javascript" src="http://cdnjs.cloudflare.com/ajax/libs/jquery/1.6.2/jquery.min.js"></script>
         <script type="application/javascript" src="/static/js/jquery.lifestream.min.js"></script>
         <script type="application/javascript" src="/static/js/lifestream_init.js"></script>
-        <title>blog :: MasseR -> IO ($title$)</title>
-        <meta http-equiv="Content-Type" content="application/xhtml+xml; charset=utf-8" />
-        <meta name="description" content="Holy Grail 3 column liquid-layout: No Quirks Mode, No IE Conditional Comments" />
-        <meta name="keywords" content="Holy Grail 3 column liquid-layout: No Quirks Mode, No IE Conditional Comments" />
-        <meta name="robots" content="index, follow" />
-        <link rel="shortcut icon" href="/favicon.ico" type="image/x-icon" />
-        <link rel="stylesheet" type="text/css" href="/css/holy-grail-no-quirks-mode.css" media="screen" />
+        <meta http-equiv="Content-Type" content="text/html; charset=utf-8">
         <link rel="stylesheet" type="text/css" href="/css/sh_style.css" media="screen" />
         <link rel="stylesheet" type="text/css" href="/css/style.css" media="screen" />
         <script type="application/javascript" src="/static/js/ga.js"></script>
         <link rel="stylesheet" type="text/css" href="/css/highlighting.css" />
-
+        <title>blog :: Masser -> IO ($title$)</title>
     </head>
     <body>
-
-        <div id="header">
-            <h1>blog :: MasseR -> IO ($title$)</h1>
-        </div>
-        <div id="colmask">
-            <div id="colmid">
-                <div id="colright">
-                    <div id="col1wrap">
-                        <div id="col1pad">
-                            <div id="col1">
-                                <!-- Column 1 start -->
-                                $body$
-                                <!-- Column 1 end -->
-                            </div>
-                        </div>
-
-                    </div>
-                    <div id="col2">
-                        <!-- Column 2 start -->
-                        <ul id="navigation">
-                            <li><h2><a href="/index.html">Home</a></h2></li>
-                            <li><h2><a href="/posts.html">All posts</a></h2></li>
-                            <!-- <li><h2><a href="/queue.html">Queue</a></h2></li> -->
-                            <li><h2><a href="/about.html">About</a></h2></li>
-                            <li>
-                            <div id="rss"><img src="/static/img/feed-icon-28x28.png" /><a href="/rss.xml">RSS</a>
-                            </div>
-                            </li>
-                        </ul>
-                        <!-- Column 2 end -->
-                    </div>
-                    <div id="col3">
-                        <!-- Column 3 start -->
-                        <!-- Column 3 end -->
-
-                    </div>
+        <!-- Open wrapper -->
+        <div id="wrapper">
+            <!-- Open header -->
+            <div id="header">
+                <!-- Open logo -->
+                <div id="logo">
+                    <a href="/"><h1>blog :: Masser -> IO ($title$)</h1></a>
                 </div>
+                <!-- Close logo -->
+                <!-- Open navigation -->
+                <div id="navigation">
+                    <ul>
+                        <li><a href="/index.html">Home</a></li>
+                        <li><a href="/posts.html">All posts</a></li>
+                        <li><a href="/about.html">About</a></li>
+                        <li id="rss"><a href="/rss.xml"><img src="/static/img/feed-icon-28x28.png" /></a></li>
+                    </ul>
+                </div>
+                <!-- Close navigation -->
             </div>
+            <!-- Open body -->
+            <div id="content">
+                $body$
+            </div>
+            <!-- Close body -->
         </div>
-        <div id="footer">
-            <!-- Footer here -->
-            <p>This site is created with <a href="http://jaspervdj.be/hakyll/index.html">Hakyll</a></p>
-        </div>
-
-        <!-- tracking here -->
-
+        <!-- Close wrapper -->
     </body>
 </html>
-
 
