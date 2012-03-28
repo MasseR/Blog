@@ -1,6 +1,6 @@
 ---
-title:Databases
-tags:haskell,database,school
+title: Databases
+tags: haskell,database,school
 ---
 
 The database used in this post can be fetched from
