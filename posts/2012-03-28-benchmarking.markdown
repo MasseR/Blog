@@ -102,25 +102,13 @@ main :: IO ()
 main = do
   w <- C.words `fmap` C.readFile "pg64.txt" -- Two books from gutenberg, totaling ~140k words
   length w `seq` return ()
+  let ns = tail $ [0,1000..100000]
   defaultMain [
-    bgroup "histogram" [
-                         bench "Map/100" $ whnf mapHistogram $ take 100 w
-                       , bench "TrieMap/100" $ whnf trieHistogram $ take 100 w
-                       , bench "HashMap/100" $ whnfIO (hashHistogram $ take 100 w)
-                       , bench "unordered-containers HashMap/100" $ whnf uhashHistogram $ take 100 w
-                       , bench "Map/1000" $ whnf mapHistogram $ take 1000 w
-                       , bench "TrieMap/1000" $ whnf trieHistogram $ take 1000 w
-                       , bench "HashMap/1000" $ whnfIO (hashHistogram $ take 1000 w)
-                       , bench "unordered-containers HashMap/1000" $ whnf uhashHistogram $ take 1000 w
-                       , bench "Map/10000" $ whnf mapHistogram $ take 10000 w
-                       , bench "TrieMap/10000" $ whnf trieHistogram $ take 10000 w
-                       , bench "HashMap/10000" $ whnfIO (hashHistogram $ take 10000 w)
-                       , bench "unordered-containers HashMap/10000" $ whnf uhashHistogram $ take 10000 w
-                       , bench "Map/100000" $ whnf mapHistogram $ take 100000 w
-                       , bench "TrieMap/100000" $ whnf trieHistogram $ take 100000 w
-                       , bench "HashMap/100000" $ whnfIO (hashHistogram $ take 100000 w)
-                       , bench "unordered-containers HashMap/100000" $ whnf uhashHistogram $ take 100000 w
-      ]
+    bgroup "histogram" $
+         [bench ("Map/" ++ show n) $ whnf mapHistogram $ take n w | n <- ns]
+      ++ [bench ("TrieMap/" ++ show n) $ whnf trieHistogram $ take n w | n <- ns]
+      ++ [bench ("unordered-containers HashMap/" ++ show n) $ whnf uhashHistogram $ take n w | n <- ns]
+      ++ [bench ("HashMap/" ++ show n) $ whnfIO (hashHistogram $ take n w) | n <- ns]
     ]
 
 ~~~
