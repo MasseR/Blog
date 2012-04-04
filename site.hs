@@ -46,6 +46,12 @@ main = hakyllWith config $ do
     route idRoute
     compile copyFileCompiler
   -- About
+  match "contact.markdown" $ do
+    route $ setExtension "html"
+    compile $ pageCompiler
+      >>> introCompiler
+      >>> applyTemplateCompiler defaultTemplate
+      >>> relativizeUrlsCompiler
   match "about.markdown" $ do
     route $ setExtension "html"
     compile $ pageCompiler
