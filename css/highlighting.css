@@ -1,3 +1,4 @@
+pre.sourceCode { overflow-x: auto }
 table.sourceCode, tr.sourceCode, td.lineNumbers, td.sourceCode, table.sourceCode pre 
    { margin: 0; padding: 0; border: 0; vertical-align: baseline; border: none; color:#DCDCCC; }
 td.lineNumbers { background-color: #262626; border-right: 1px solid #AAAAAA; text-align: right; color: #9FAFAF; padding-right: 5px; padding-left: 5px; }
