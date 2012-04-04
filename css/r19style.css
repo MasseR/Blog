@@ -1,12 +1,12 @@
 * {padding:0; margin:0;}
-html { display:block; height:100%; width:100%; background:url(/static/images/htmlbg.jpg) repeat;
+html { display:block; height:100%; width:100%; background:url(../static/images/htmlbg.jpg) repeat;
 }
-body { background:url(/static/images/bodybg.jpg) repeat-x; font-family:Verdana, Geneva, sans-serif; font-size:0.88em;}
-#wrap {background:url(/static/images/wrapbg.jpg) no-repeat; width:960px; margin:auto; min-height:900px; margin-bottom:100px;}
+body { background:url(../static/images/bodybg.jpg) repeat-x; font-family:Verdana, Geneva, sans-serif; font-size:0.88em;}
+#wrap {background:url(../static/images/wrapbg.jpg) no-repeat; width:960px; margin:auto; min-height:900px; margin-bottom:100px;}
 #topbar {height:18px;}
 #ribbon {height:102px;}
 #header {height:200px; background:#222326;}
-#topnav {background:#111; height:50px; background:url(/static/images/menubar.jpg) repeat-x; font-family:Tahoma, Geneva, sans-serif; font-weight:bold;}
+#topnav {background:#111; height:50px; background:url(../static/images/menubar.jpg) repeat-x; font-family:Tahoma, Geneva, sans-serif; font-weight:bold;}
 .clear {clear:both;}
 #content {background:#efefef;}
 #left {width:650px; float:left; background:#fff;}
