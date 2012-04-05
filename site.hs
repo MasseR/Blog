@@ -6,12 +6,12 @@ import Prelude hiding (id)
 import Control.Category (id)
 import Control.Arrow ((***), (>>>), arr)
 import Data.Monoid
-import Data.List
+import Data.List hiding (group)
 import Hakyll.Main
 import Hakyll.Core.Routes
 import Hakyll.Core.Configuration (defaultHakyllConfiguration, deployCommand)
 import Hakyll.Core.Util.Arrow
-import Hakyll.Core.Identifier.Pattern (list)
+import Hakyll.Core.Identifier.Pattern (list, inGroup)
 import Hakyll.Core.Rules
 import Hakyll.Core.Compiler
 import Hakyll.Core.Writable.CopyFile
@@ -27,6 +27,10 @@ import Text.HTML.TagSoup
 
 main = hakyllWith config $ do
   let defaultTemplate = "templates/rs19.html"
+  sidebarposts <- group "sidebarposts" $ do
+      match "posts/*" $ do
+        route $ setExtension "html"
+        compile $ pageCompiler
   -- CSS
   match "css/*" $ do
     route idRoute
@@ -39,12 +43,14 @@ main = hakyllWith config $ do
     route $ setExtension "html"
     compile $ pageCompiler
       >>> introCompiler
+      >>> sidebarCompiler sidebarposts
       >>> applyTemplateCompiler defaultTemplate
       >>> relativizeUrlsCompiler
   -- Posts
   match "posts/*" $ do
     route $ setExtension "html"
     compile $ pageCompiler
+      >>> sidebarCompiler sidebarposts
       >>> introCompiler
       >>> arr (renderDateField "date" "%B %e, %Y" "Date unknown")
       >>> arr (renderDateField "month" "%B" "Date unknown")
@@ -60,20 +66,22 @@ main = hakyllWith config $ do
   create "index.html" $ constA mempty
     >>> top5 "templates/rs19teaser.html"  "posts"
     >>> arr (setField "title" "Home")
-    >>> postCompiler "templates/index.html" defaultTemplate
+    >>> postCompiler "templates/index.html" defaultTemplate sidebarposts
   -- Posts list
   match "posts.html" $ route idRoute
   create "posts.html" $ constA mempty
-    >>> setFieldPageList (recentFirst) "templates/rs19teaser.html" "posts" "posts/*"
+    >>> setFieldPageList (recentFirst) "templates/rs19teaser.html" "posts" ("posts/*" `mappend` inGroup Nothing)
     >>> arr (setField "title" "Posts")
-    >>> postCompiler "templates/rs19posts.html" defaultTemplate
+    >>> postCompiler "templates/rs19posts.html" defaultTemplate sidebarposts
   match "templates/*" $ compile templateCompiler
   match "rss.xml" $ route idRoute
-  create "rss.xml" $ requireAll_ "posts/*" >>> renderRss feedConfiguration
+  create "rss.xml" $ requireAll_ ("posts/*" `mappend` inGroup Nothing) >>> renderRss feedConfiguration
   where
-    top5 template key = setFieldPageList (take 5 . recentFirst) template key "posts/*"
+    top5 template key = setFieldPageList (take 5 . recentFirst) template key ("posts/*" `mappend` inGroup Nothing)
     introCompiler = requireA "intro.markdown" (setFieldA "intro" $ arr pageBody)
-    postCompiler tpl roottpl = introCompiler
+    sidebarCompiler sidebarposts = setFieldPageList (take 5 . recentFirst) "templates/postitem.html" "sidebar" sidebarposts
+    postCompiler tpl roottpl sidebarposts = introCompiler
+      >>> sidebarCompiler sidebarposts
       >>> applyTemplateCompiler tpl
       >>> applyTemplateCompiler roottpl
       >>> relativizeUrlsCompiler
