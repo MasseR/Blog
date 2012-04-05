@@ -4,7 +4,7 @@ tags: haskell,database,school
 ---
 
 The database used in this post can be fetched from
-[here](/static/employee.sql).
+[here](/static/lib/employee.sql).
 
 I recently had an school assignment to write a java method to list all
 employees with their projects. The example output was given as:

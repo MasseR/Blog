@@ -11,6 +11,7 @@ import Hakyll.Main
 import Hakyll.Core.Routes
 import Hakyll.Core.Configuration (defaultHakyllConfiguration, deployCommand)
 import Hakyll.Core.Util.Arrow
+import Hakyll.Core.Identifier.Pattern (list)
 import Hakyll.Core.Rules
 import Hakyll.Core.Compiler
 import Hakyll.Core.Writable.CopyFile
@@ -30,29 +31,11 @@ main = hakyllWith config $ do
   match "css/*" $ do
     route idRoute
     compile compressCssCompiler
-  -- JS
-  match "static/js/**" $ do
+  match "static/**/*" $ do
     route idRoute
     compile copyFileCompiler
-  -- Data
-  match "static/data/**" $ do
-    route idRoute
-    compile copyFileCompiler
-  -- Images
-  match "static/img/*" $ do
-    route idRoute
-    compile copyFileCompiler
-  match "static/images/*" $ do
-    route idRoute
-    compile copyFileCompiler
-  -- About
-  match "contact.markdown" $ do
-    route $ setExtension "html"
-    compile $ pageCompiler
-      >>> introCompiler
-      >>> applyTemplateCompiler defaultTemplate
-      >>> relativizeUrlsCompiler
-  match "about.markdown" $ do
+  match "intro.markdown" $ compile pageCompiler
+  match (list ["contact.markdown", "about.markdown"]) $ do
     route $ setExtension "html"
     compile $ pageCompiler
       >>> introCompiler
@@ -62,40 +45,38 @@ main = hakyllWith config $ do
   match "posts/*" $ do
     route $ setExtension "html"
     compile $ pageCompiler
+      >>> introCompiler
       >>> arr (renderDateField "date" "%B %e, %Y" "Date unknown")
       >>> arr (renderDateField "month" "%B" "Date unknown")
       >>> arr (renderDateField "day" "%d" "Date unknown")
-      >>> introCompiler
       >>> arr (copyBodyToField "description")
       >>> arr (renderField "description"  "excerpt" excerpt)
       >>> applyTemplateCompiler "templates/rs19post.html"
       >>> applyTemplateCompiler defaultTemplate
       >>> relativizeUrlsCompiler
+  match (list ["index.html", "posts.html"]) $ route idRoute
   -- Index
-  match "intro.markdown" $ compile pageCompiler
   match "index.html" $ route idRoute
   create "index.html" $ constA mempty
-    >>> arr (setField "title" "Home")
-    >>> introCompiler
     >>> top5 "templates/rs19teaser.html"  "posts"
-    >>> applyTemplateCompiler "templates/index.html"
-    >>> applyTemplateCompiler defaultTemplate
-    >>> relativizeUrlsCompiler
+    >>> arr (setField "title" "Home")
+    >>> postCompiler "templates/index.html" defaultTemplate
   -- Posts list
   match "posts.html" $ route idRoute
   create "posts.html" $ constA mempty
-    >>> arr (setField "title" "Posts")
-    >>> introCompiler
     >>> setFieldPageList (recentFirst) "templates/rs19teaser.html" "posts" "posts/*"
-    >>> applyTemplateCompiler "templates/rs19posts.html"
-    >>> applyTemplateCompiler defaultTemplate
-    >>> relativizeUrlsCompiler
+    >>> arr (setField "title" "Posts")
+    >>> postCompiler "templates/rs19posts.html" defaultTemplate
   match "templates/*" $ compile templateCompiler
   match "rss.xml" $ route idRoute
   create "rss.xml" $ requireAll_ "posts/*" >>> renderRss feedConfiguration
   where
     top5 template key = setFieldPageList (take 5 . recentFirst) template key "posts/*"
     introCompiler = requireA "intro.markdown" (setFieldA "intro" $ arr pageBody)
+    postCompiler tpl roottpl = introCompiler
+      >>> applyTemplateCompiler tpl
+      >>> applyTemplateCompiler roottpl
+      >>> relativizeUrlsCompiler
     config = defaultHakyllConfiguration { deployCommand = "rsync --checksum --delete -avz -e ssh _site/ machra@linux.utu.fi:/www/users/m/machra/ --exclude ostoslista" }
     feedConfiguration = FeedConfiguration {
         feedTitle         = "Masse's blog"
