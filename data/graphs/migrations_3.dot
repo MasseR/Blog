@@ -1,0 +1,11 @@
+digraph g {
+graph [bgcolor = "transparent", label="Arrows are reversed", imagescale=true, scale=0.2];
+
+initial -> addToken;
+initial -> addLevel;
+addLevel -> defaultLevel;
+initial -> addCustomer;
+initial -> joinCustomerUser;
+addCustomer -> joinCustomerUser;
+
+}

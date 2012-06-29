@@ -1,0 +1,18 @@
+/*
+initial
+addCustomer
+addLevel
+addToken
+joinCustomerUser
+defaultLevel
+*/
+
+digraph g {
+graph [bgcolor = "transparent"];
+
+initial -> addCustomer;
+addCustomer -> addLevel;
+addLevel -> addToken;
+addToken -> joinCustomerUser;
+joinCustomerUser -> defaultLevel;
+}
