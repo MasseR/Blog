@@ -1,0 +1,109 @@
+graph g {
+    // Tables
+    node[shape=box];
+    User;
+    Email;
+    Household;
+    HouseholdMembers;
+    HouseholdQueue;
+    Pantry;
+    Item;
+    Shoppinglist;
+    ShoppinglistItem;
+    // Fields
+    node[shape=oval];
+    UserIdent;
+    UserPassword;
+    EmailEmail;
+    EmailUser;
+    EmailVerkey;
+    HouseholdId;
+    HouseholdOwner;
+    HouseholdName;
+    HouseholdMembersHousehold;
+    HouseholdMembersMember;
+    HouseholdQueueHousehold;
+    HouseholdQueueApplicant;
+    PantryHousehold;
+    PantryItem;
+    ItemId;
+    ItemName;
+    ItemCost;
+    ShoppinglistId;
+    ShoppinglistName;
+    ShoppinglistHousehold;
+    ShoppinglistItemList;
+    ShoppinglistItemItem;
+    ShoppinglistItemCount;
+
+
+    // Table definitions
+
+    // User table
+    User -- UserIdent;
+    User -- UserPassword;
+
+    // Email table
+    Email -- EmailEmail;
+    Email -- EmailUser;
+    Email -- EmailVerkey;
+
+    // Household table
+    Household -- HouseholdOwner;
+    Household -- HouseholdName;
+    Household -- HouseholdId;
+
+    // HouseholdMembers table
+    HouseholdMembers -- HouseholdMembersHousehold;
+    HouseholdMembers -- HouseholdMembersMember;
+
+    // HouseholdQueue table
+    HouseholdQueue -- HouseholdQueueHousehold;
+    HouseholdQueue -- HouseholdQueueApplicant;
+
+    // Item table
+    Item -- ItemName;
+    Item -- ItemCost;
+    Item -- ItemId;
+
+    // Pantry table
+    Pantry -- PantryHousehold;
+    Pantry -- PantryItem;
+
+    // Shoppinglist table
+    Shoppinglist -- ShoppinglistId;
+    Shoppinglist -- ShoppinglistName;
+    Shoppinglist -- ShoppinglistHousehold;
+
+    // ShoppinglistItem table
+    ShoppinglistItem -- ShoppinglistItemList;
+    ShoppinglistItem -- ShoppinglistItemItem;
+    ShoppinglistItem -- ShoppinglistItemCount;
+
+    // Joins
+
+    // Email -> User
+    EmailUser -- UserIdent
+
+    // Household -> User
+    HouseholdOwner -- UserIdent;
+
+    // HouseholdMembers -> {User, Household}
+    HouseholdMembersHousehold -- HouseholdId;
+    HouseholdMembersMember -- UserIdent;
+
+    // HouseholdQueue -> {User, Household}
+    HouseholdQueueHousehold -- HouseholdId;
+    HouseholdQueueApplicant -- UserIdent;
+
+    // Pantry -> {Item, Household}
+    PantryItem -- ItemId;
+    PantryHousehold -- HouseholdId;
+
+    // Shoppinglist -> Household
+    ShoppinglistHousehold -- HouseholdId;
+
+    // ShoppinglistItem -> {Shoppinglist, Item}
+    ShoppinglistItemList -- ShoppinglistId;
+    ShoppinglistItemItem -- ItemId;
+}

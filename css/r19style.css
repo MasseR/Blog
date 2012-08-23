@@ -26,6 +26,21 @@ h1#sitename {font: bold 2.00em 'American Typewriter', Georgia, sans-serif; color
 .post {padding-bottom:15px; margin-bottom:15px; border-bottom:solid 3px #ccc;}
 .post h2 {display:block; font: bold 1.8em 'American Typewriter', Georgia, sans-serif; color:#306; margin-bottom:15px;}
 .postcontent {margin-left:110px;}
+.postcontent li { 
+    border: 0 !important;
+}
+.postcontent ul li {
+    display: list-item !important;
+    list-style: disc;
+    padding-left: 7px !important;
+    margin-left: 15px;
+}
+.postcontent li > ul {
+    margin-bottom: 0 !important;
+}
+.footnotes p {
+    margin-bottom: 0.3em !important;
+}
 .postheader {width:100px; float:left;}
 .postheader .postinfo {font-size:0.80em!important; width:90px; padding:5px; display:block;}
 .postheader .postinfo span {display:block;}
