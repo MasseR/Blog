@@ -1,0 +1,4 @@
+Some thoughts on what I could write about
+
+- Rsync and backuping. Take benchmarks with `--link-dest` into consideration?
+
