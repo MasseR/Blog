@@ -17,7 +17,9 @@ Grouping
 
 A simple grouping function could be typed like this. The types tell that we probably somehow join the elements together into sublists, wherein the name tells us that the joining is grouping. Aside from that, I'll give another restriction; all the elements must be in their buckets, or in other words, every sublist must be unique.
 
-    group :: (Ord a) => [a] -> [[a]]
+~~~{.haskell}
+group :: (Ord a) => [a] -> [[a]]
+~~~
 
 There is a trivial implementation for this function, but I'll leave it to later, as there is one property in particular that fails with the default `Data.List.group` function.
 
@@ -30,23 +32,29 @@ Let's start by declaring the properties (that I thought of when walking to car).
 
 Let's try to tackle the properties one by one.
 
-    prop_all_elements xs = sort xs == (sort . concat . group) xs
-      where types = (xs :: [Int])
+~~~{.haskell}
+prop_all_elements xs = sort xs == (sort . concat . group) xs
+  where types = (xs :: [Int])
+~~~
 
 The thing with the types part is that QuickCheck can't infer the types polymorphically. You need to have concrete types. Other than that the property is simple. If we concatenate and sort the grouped list, we should end up with the same list as sorted original list. All the elements that are in the original list are in the grouped list.
 
-    prop_grouped_are_grouped xs = all same grouped
-      where grouped = group (xs :: [Int])
-            same [] = True
-            same (y:ys) = all (== y) ys
+~~~{.haskell}
+prop_grouped_are_grouped xs = all same grouped
+  where grouped = group (xs :: [Int])
+        same [] = True
+        same (y:ys) = all (== y) ys
+~~~
 
 Aside from being our next property, it's a nice example of higher-order functions. `all` is a specialized higher-order function that specializes fold. All it requires is a `a -> Bool` function which are then folded into `Bool`. As for the property, it's pretty much a mathematical notation for it. Very simple. As for why I wrote a base case for the pattern matching is that we can't be sure that QuickCheck doesn't provide us with empty lists, actually we can be pretty sure there is going to be a couple of empty lists in the mix.
 
-    prop_all_elements_in_group xs = all allElementsInGroups grouped
-      where grouped = group (xs :: [Int])
-            totalElements x = length $ filter (== x) xs
-            allElementsInGroups [] = True
-            allElementsInGroups (y:ys) length (y:ys) == totalElements y
+~~~{.haskell}
+prop_all_elements_in_group xs = all allElementsInGroups grouped
+  where grouped = group (xs :: [Int])
+        totalElements x = length $ filter (== x) xs
+        allElementsInGroups [] = True
+        allElementsInGroups (y:ys) length (y:ys) == totalElements y
+~~~
 
 Generally this doesn't differ from the previous property test much. The skeleton is the same `all something grouped`, but the testing function is different. What we test here is that the number of elements in a bucket must be the same as the total number of elements in the original list.
 
@@ -57,8 +65,10 @@ What can we say in general about these tests? They all play an important role in
 
 What about the grouping function? Let's see how we could trivially write it. It's a contrived example, but it demonstrates how QuickCheck can find problems that you didn't think of.
 
-    group :: (Ord a) => [a] -> [[a]]
-    group = L.group
+~~~{.haskell}
+group :: (Ord a) => [a] -> [[a]]
+group = L.group
+~~~
 
 Let's see how it fares against our properties.
 
@@ -92,37 +102,39 @@ A-ha! The default group function groups the adjacent elements. This is of course
 Instead of going through each of the properties one by one, I'll just use the test-framework package and put the tests there.
 
 
-    module Main where
-    
-    import Test.QuickCheck
-    import Test.Framework
-    import Test.Framework.Providers.QuickCheck2
-    import Grouping (group)
-    import Data.List (sort)
-    
-    main = defaultMain tests
-    
-    tests = [
-        testGroup "Grouping" [
-              testProperty "All original elements present" prop_all_elements
-            , testProperty "All grouped elements are the same" prop_grouped_are_grouped
-            , testProperty "All elements are in their buckets" prop_all_elements_in_group
-          ]
+~~~{.haskell}
+module Main where
+
+import Test.QuickCheck
+import Test.Framework
+import Test.Framework.Providers.QuickCheck2
+import Grouping (group)
+import Data.List (sort)
+
+main = defaultMain tests
+
+tests = [
+    testGroup "Grouping" [
+          testProperty "All original elements present" prop_all_elements
+        , testProperty "All grouped elements are the same" prop_grouped_are_grouped
+        , testProperty "All elements are in their buckets" prop_all_elements_in_group
       ]
-    
-    prop_all_elements xs = sort xs == (sort . concat . group) xs
-      where types = (xs :: [Int])
-    
-    prop_grouped_are_grouped xs = all same grouped
-      where grouped = group (xs :: [Int])
-            same [] = True
-            same (x:xs) = all (== x) xs
-    
-    prop_all_elements_in_group xs = all allElementsInGroups grouped
-      where grouped = group (xs :: [Int])
-            totalElements x = length $ filter (== x) xs
-            allElementsInGroups [] = True
-            allElementsInGroups (y:ys) = length (y:ys) == totalElements y
+  ]
+
+prop_all_elements xs = sort xs == (sort . concat . group) xs
+  where types = (xs :: [Int])
+
+prop_grouped_are_grouped xs = all same grouped
+  where grouped = group (xs :: [Int])
+        same [] = True
+        same (x:xs) = all (== x) xs
+
+prop_all_elements_in_group xs = all allElementsInGroups grouped
+  where grouped = group (xs :: [Int])
+        totalElements x = length $ filter (== x) xs
+        allElementsInGroups [] = True
+        allElementsInGroups (y:ys) = length (y:ys) == totalElements y
+~~~
 
 And now the results
 
