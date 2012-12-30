@@ -2,3 +2,7 @@ Some thoughts on what I could write about
 
 - Rsync and backuping. Take benchmarks with `--link-dest` into consideration?
 - Wrote a little bit of quickcheck on introitu. Could elaborate on that?
+- Finish the benchmarking post
+- Finish the triemap post
+- How about the naive bayes + images?
+- How about writing about convolving and sobel operator (edge detection)?
