@@ -25,12 +25,159 @@ scripts. The first one is closer to rsnapshot as it copies the newest directory
 as the second, and the second script uses the newer `--link-dest` option rsync
 provides.
 
-Note: Write about normal rsync command and separate what each option does
+As the backups are based on two commands, I will elaborate on them. The
+synchronizing happens with `rsync`, where the full command is below.
 
-Note: Do the same for cp
+    rsync -a --numeric-ids --delete $FROM $TO
 
-Note: Show rsync and cp together
+`-a`
 
-Note: Evolve into rsnapshot style
+ :    The `-a` flag means archiving. The rsync manual says that it equals to
+ `-rlptgoD`, meaning that it is recursive, copies symlinks as symlinks,
+ preserves permissions, preserves modification times, preserves groups,
+ preserves owner, preserves devices and preserves specials. In short it
+ preserves file metainformation.
 
-Note: Evolve into link-dest
+`--numeric-ids`
+
+ :    The `--numeric-ids` flag causes rsync not to map uid/gid values to user
+ and group names. This makes it easier to restore if needed.
+
+`--delete`
+
+ :   The `--delete` flag causes deleted files to be deleted on the synchronized
+ directory.
+
+The second important command is the `cp` command. This is important because
+this allows us to have incremental backups. Before that though I need to
+explain the concept of hard links. Hard links are entries to the same file,
+meaning that the content exists only once, but there can be multiple entries to
+that same content. This has the benefit that no additional space is used when
+creating hard links.
+
+    cp -al $FROM $TO
+
+`-a`
+
+ :    The `-a` flag is similar to the one found with rsync. It archives.
+
+`-l`
+
+ :    The `-l` causes `cp` to create hard links instead of copying.
+
+With these two command we can start evolving the backup script. As a first
+example, let's create a script that copies `backup.0` to `backup.1`
+indefinitely. As you can see it doesn't do much, it just creates the backup
+directory if it doesn't exist and removes the oldest backup if it exists.
+Before syncing it copies the previous latest as links into the new older.
+
+~~~{.bash}
+#!/bin/bash
+
+DIRS=($HOME/.vim $HOME/.mutt)
+BACKUPDIR="$PWD/backups"
+
+mkdir -p $BACKUPDIR
+
+rm -fr $BACKUPDIR/backup.1
+
+if [ -d $BACKUPDIR/backup.0 ]; then
+    cp -al $BACKUPDIR/backup.{0,1}
+fi
+
+for dir in $DIRS; do
+    cleandir=$(echo $dir | sed 's/\(\w\)\/\+$/\1/')
+    rsync -a --numeric-ids --delete "$cleandir" $BACKUPDIR/backup.0
+done
+~~~
+
+For the second version I want to add multiple histories where the oldest is
+destroyed automatically. This version and the next are already something that
+might be used in a pinch, but really they need something more to be properly
+usable. Like the previous version, this starts by creating state variables and
+creating the backup directory. Notice how the last backup directory is built
+from `$BACKUPS`.
+
+~~~{.bash}
+#!/bin/bash
+
+DIRS=($HOME/.vim $HOME/.mutt)
+BACKUPDIR=$PWD/backups
+BACKUPS=5
+
+mkdir -p $BACKUPDIR
+
+# Remove the oldest
+
+if [ -d $BACKUPDIR/backup.$BACKUPS ]
+then
+    rm -fr $BACKUPDIR/backup.$BACKUPS
+fi
+
+# Bump version numbers
+
+for i in $(seq $((BACKUPS - 1)) -1 1); do
+    now=$BACKUPDIR/backup.$i
+    next=$BACKUPDIR/backup.$((i + 1))
+    if [ -d $now ]
+    then
+        mv $now $next
+    fi
+done
+
+if [ -d $BACKUPDIR/backup.0 ]
+then
+    cp -al $BACKUPDIR/backup.{0,1}
+fi
+
+for dir in $DIRS; do
+    cleandir=$(echo $dir | sed 's/\(\w\)\/\+$/\1/')
+    rsync -az --numeric-ids --delete $cleandir $BACKUPDIR/backup.0/
+done
+~~~
+
+And as for the last version, much has not changed. The main change is that
+rsync uses `--link-dest`, which means that files in that directory are
+hardlinked to the new directory when the files have not been changed. It took
+me a while to wrap my head around it, but read that part of the code and you
+should be able to understand it just fine.
+
+~~~{.bash}
+#!/bin/bash
+
+DIRS=($HOME/.vim $HOME/.mutt)
+BACKUPDIR=$PWD/backups
+BACKUPS=5
+
+mkdir -p $BACKUPDIR
+
+# Remove the oldest
+
+if [ -d $BACKUPDIR/backup.$BACKUPS ]
+then
+    rm -fr $BACKUPDIR/backup.$BACKUPS
+fi
+
+for i in $(seq $((BACKUPS - 1)) -1 1); do
+    now=$BACKUPDIR/backup.$i
+    next=$BACKUPDIR/backup.$((i + 1))
+    if [ -d $now ]
+    then
+        mv $now $next
+    fi
+done
+
+# Bump version numbers
+
+if [ -d $BACKUPDIR/backup.0 ]
+then
+    mv $BACKUPDIR/backup.{0,1}
+else
+    mkdir $BACKUPDIR/backup.1 # Empty
+fi
+
+for dir in $DIRS; do
+    cleandir=$(echo $dir | sed 's/\(\w\)\/\+$/\1/')
+    rsync -az --delete --link-dest=$BACKUPDIR/backup.1 $cleandir $BACKUPDIR/backup.0/
+done
+~~~
