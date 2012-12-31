@@ -37,7 +37,8 @@ away](https://en.wikipedia.org/wiki/Health_effects_of_honey).
 - Russian blend.
 - Ruusutee.
 - Hehkuva talvi.
-- Earl grey
+- Earl grey.
+- Toffeetee.
 
 ### White teas
 - Valkoinen tiikeri (white tiger). Basic white tea from either Nordqvist or
