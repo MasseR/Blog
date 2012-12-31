@@ -1,0 +1,6 @@
+.virthualenv
+*.swp
+_cache
+_site
+dist
+tags
