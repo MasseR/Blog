@@ -46,6 +46,14 @@ main = hakyllWith config $ do
       >>> sidebarCompiler sidebarposts
       >>> applyTemplateCompiler defaultTemplate
       >>> relativizeUrlsCompiler
+  -- Personal
+  match "personal/*" $ do
+    route $ setExtension "html"
+    compile $ pageCompiler
+      >>> sidebarCompiler sidebarposts
+      >>> introCompiler
+      >>> applyTemplateCompiler defaultTemplate
+      >>> relativizeUrlsCompiler
   -- Posts
   match "posts/*" $ do
     route $ setExtension "html"
