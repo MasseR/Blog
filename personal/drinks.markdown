@@ -35,6 +35,16 @@ Breakfast Tea from Twinings. This is one of the two teas I keep at work, but
 lately I haven't been able to get the flavour out of this. Maybe the leafs have
 suffered from air as they aren't preserved stored properly.
 
+Superior English Breakfast Tea
+
+ :   This superior english breakfast tea from [Canton Tea Co](http://www.cantonteaco.com/loose-leaf-tea/type/black-tea/superior-english-breakfast.html)
+ is the first tea I've bought online. I bought 100g of it and it came in two
+ 50g ziplock bags with instructions. A couple of weeks later the company gets
+ in touch with you and asks what you think of it. I haven't written a review
+ for their site yet, but I might in the future. I like it, but it's not as good
+ as I had hoped. The reviews on the site were praising it to the heavens, but
+ while it's great, it's not that good, or I haven't been able to get all the
+ flavour out yet. I like it and might buy it again.
 
 Russian blend
 
