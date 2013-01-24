@@ -1,0 +1,39 @@
+---
+title: Simple problems
+tags: bash
+---
+
+Sometimes you have simple problems with simple solutions. I am an avid tea
+drinker but I have trouble keeping tab on how long the tea has been steeping.
+Clearly I need a timer of sorts. Yeah, I know, it's a problem solved millions
+of times. For a long time I used Tea Timer on android, but I had some problems
+with it. My main gripe with it is that it notifies the user by vibrating the
+phone. The problem is that if it's in my pocket, I can't feel it. Also if I try
+to use it with my tablet, it won't work because it doesn't vibrate. I tried the
+default timer on the phone, but it notifies by sound and most of the time, it's
+not appropriate to be loud, eg. at work or when my wife is sleeping.
+
+My third solution was a simple shell script. Simple enough to show inline:
+`sleep 120; notify-send "Tea"`. The problem with this was that it sat there
+idly until the time runs out and sends out a notification. If I miss the
+notification, I have no idea when the notification was. Also if I try to check
+how much time is left, so that I can see whether the tea is soon or if I can
+still focus on something else. As a solution, I wrote the following script in
+one morning before my first cup of tea. It takes a time in seconds, counts down
+to 0 and then notifies with `notify-send`.
+
+~~~{.bash}
+#!/bin/bash
+
+start=$1
+now=$(date +%s)
+
+remaining=$(($start - ($(date +%s) - $now)))
+while [ $remaining -gt 0 ]; do
+    echo -ne "\r\033[K$remaining"
+    sleep 1;
+    remaining=$(($start - ($(date +%s) - $now)))
+done
+
+notify-send "Tea" "Tea"
+~~~
