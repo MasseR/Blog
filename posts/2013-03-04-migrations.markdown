@@ -1,7 +1,7 @@
 ---
 title: Two-way database migrations
 ---
-**Note**: This is a direct copy from my planning software.
+**Note**: This is a direct copy from my scribbles.
 
 ## Two-way database migrations
 
