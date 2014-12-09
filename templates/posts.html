@@ -1,7 +1,11 @@
 <div id="posts">
     <h2>Recent posts</h2>
     <ul>
-	$posts$
+        $for(posts)$
+        <li>
+            <a href="$url$">$title$</a>
+        </li>
+        $endfor$
     </ul>
 </div>
 
