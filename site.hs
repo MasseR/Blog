@@ -1,108 +1,51 @@
-{-# LANGUAGE OverloadedStrings, Arrows #-}
+{-# Language OverloadedStrings #-}
 
-module Main where
-
-import Prelude hiding (id)
-import Control.Category (id)
-import Control.Arrow ((***), (>>>), arr)
+import Hakyll
 import Data.Monoid
-import Data.List hiding (group)
-import Hakyll.Main
-import Hakyll.Core.Routes
-import Hakyll.Core.Configuration (defaultHakyllConfiguration, deployCommand)
-import Hakyll.Core.Util.Arrow
-import Hakyll.Core.Identifier.Pattern (list, inGroup)
-import Hakyll.Core.Rules
-import Hakyll.Core.Compiler
-import Hakyll.Core.Writable.CopyFile
-import Hakyll.Web.CompressCss
-import Hakyll.Web.Template
-import Hakyll.Web.Urls.Relativize
-import Hakyll.Web.Feed
-import Hakyll.Web.Page
-import Hakyll.Web.Page.List
-import Hakyll.Web.Page.Metadata
-import Text.HTML.TagSoup
+import Control.Applicative
 
-
-main = hakyllWith config $ do
-  let defaultTemplate = "templates/rs19.html"
-  sidebarposts <- group "sidebarposts" $ do
-      match "posts/*" $ do
-        route $ setExtension "html"
-        compile $ pageCompiler
-  -- CSS
+main :: IO ()
+main = hakyll $ do
+  match "templates/*" $ do
+    compile templateCompiler
   match "css/*" $ do
     route idRoute
     compile compressCssCompiler
-  match "static/**/*" $ do
+  match "static/*/**" $ do
     route idRoute
     compile copyFileCompiler
-  match "intro.markdown" $ compile pageCompiler
-  match (list ["contact.markdown", "about.markdown"]) $ do
-    route $ setExtension "html"
-    compile $ pageCompiler
-      >>> introCompiler
-      >>> sidebarCompiler sidebarposts
-      >>> applyTemplateCompiler defaultTemplate
-      >>> relativizeUrlsCompiler
-  -- Personal
-  match "personal/*" $ do
-    route $ setExtension "html"
-    compile $ pageCompiler
-      >>> sidebarCompiler sidebarposts
-      >>> introCompiler
-      >>> applyTemplateCompiler defaultTemplate
-      >>> relativizeUrlsCompiler
-  -- Posts
   match "posts/*" $ do
-    route $ setExtension "html"
-    compile $ pageCompiler
-      >>> sidebarCompiler sidebarposts
-      >>> introCompiler
-      >>> arr (renderDateField "date" "%B %e, %Y" "Date unknown")
-      >>> arr (renderDateField "month" "%B" "Date unknown")
-      >>> arr (renderDateField "day" "%d" "Date unknown")
-      >>> arr (copyBodyToField "description")
-      >>> arr (renderField "description"  "excerpt" excerpt)
-      >>> applyTemplateCompiler "templates/rs19post.html"
-      >>> applyTemplateCompiler defaultTemplate
-      >>> relativizeUrlsCompiler
-  match (list ["index.html", "posts.html"]) $ route idRoute
-  -- Index
-  match "index.html" $ route idRoute
-  create "index.html" $ constA mempty
-    >>> top5 "templates/rs19teaser.html"  "posts"
-    >>> arr (setField "title" "Home")
-    >>> postCompiler "templates/index.html" defaultTemplate sidebarposts
-  -- Posts list
-  match "posts.html" $ route idRoute
-  create "posts.html" $ constA mempty
-    >>> setFieldPageList (recentFirst) "templates/rs19teaser.html" "posts" ("posts/*" `mappend` inGroup Nothing)
-    >>> arr (setField "title" "Posts")
-    >>> postCompiler "templates/rs19posts.html" defaultTemplate sidebarposts
-  match "templates/*" $ compile templateCompiler
-  match "rss.xml" $ route idRoute
-  create "rss.xml" $ requireAll_ ("posts/*" `mappend` inGroup Nothing) >>> renderRss feedConfiguration
-  where
-    top5 template key = setFieldPageList (take 5 . recentFirst) template key ("posts/*" `mappend` inGroup Nothing)
-    introCompiler = requireA "intro.markdown" (setFieldA "intro" $ arr pageBody)
-    sidebarCompiler sidebarposts = setFieldPageList (take 5 . recentFirst) "templates/postitem.html" "sidebar" sidebarposts
-    postCompiler tpl roottpl sidebarposts = introCompiler
-      >>> sidebarCompiler sidebarposts
-      >>> applyTemplateCompiler tpl
-      >>> applyTemplateCompiler roottpl
-      >>> relativizeUrlsCompiler
-    config = defaultHakyllConfiguration { deployCommand = "rsync --checksum --delete -avz -e ssh _site/ machra@linux.utu.fi:/www/users/m/machra/ --exclude ostoslista" }
-    feedConfiguration = FeedConfiguration {
-        feedTitle         = "Masse's blog"
-        , feedDescription = "Blog about functional programming and all around it"
-        , feedAuthorName  = "Mats Rauhala"
-        , feedRoot        = "http://users.utu.fi/machra"
-      }
-
-excerpt :: String -> String
-excerpt = renderTags . tail .
-  takeWhile (~/= TagClose ("p" :: String)) .
-    dropWhile (~/= TagOpen ("p" :: String) []) .
-      parseTags
+    route $ setExtension ".html"
+    compile $
+      pandocCompiler >>=
+      loadAndApplyTemplate "templates/post.html" defaultContext >>=
+      loadAndApplyTemplate "templates/default.html" defaultContext >>=
+      relativizeUrls
+  match "about.markdown" $ do
+    route $ setExtension ".html"
+    compile $
+      pandocCompiler >>=
+      loadAndApplyTemplate "templates/default.html" defaultContext >>=
+      relativizeUrls
+  create ["posts.html"] $ do
+    route idRoute
+    compile $ do
+      posts <- recentFirst =<< loadAll "posts/*"
+      let ctx = listField "posts" defaultContext (return posts)
+                <> constField "title" "Posts"
+                <> defaultContext
+      makeItem "" >>=
+        loadAndApplyTemplate "templates/posts.html" ctx >>=
+        loadAndApplyTemplate "templates/default.html" ctx >>=
+        relativizeUrls
+  create ["index.html" ]$ do
+    route idRoute
+    compile $ do
+      posts <- take 3 <$> (recentFirst =<< loadAll "posts/*")
+      let ctx = constField "title" "Home"
+                <> listField "posts" defaultContext (return posts)
+                <> defaultContext
+      makeItem []
+        >>= loadAndApplyTemplate "templates/index.html" ctx
+        >>= loadAndApplyTemplate "templates/default.html" ctx
+        >>= relativizeUrls
