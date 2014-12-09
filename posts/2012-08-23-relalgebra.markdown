@@ -1,7 +1,7 @@
---
+---
 title: Relational algebra
 tags: haskell, databases
---
+---
 
 I've been obsessing over [relational
 algebra](https://en.wikipedia.org/wiki/Relational_algebra) for the past year or

@@ -1,7 +1,7 @@
---
+---
 author: Mats Rauhala
 title: Journals
---
+---
 
 There has been a lot of talk about programming journals lately. The common
 motivation seems to be learning, by writing down what you have done when the
